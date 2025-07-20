@@ -1,5 +1,6 @@
 import os
 from dotenv import load_dotenv
+import re
 
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.prompts import PromptTemplate
@@ -33,38 +34,27 @@ Please produce a user story document that takes into account any relevant past f
 
 Strictly follow this format:
 
----
-
-**User Story**  
+User Story
+                                                
 As a [actor],  
 I want to [action],  
 So that [benefit].
 
----
-
-**Context**  
+Context 
 Give 2–3 lines of extra background explaining the story’s business value, technical considerations, or UX importance.
 
----
-
-**Acceptance Criteria**  
+Acceptance Criteria
 - Clear  
 - Testable  
 - Functional requirements only
 
----
-
-**Security Requirements** (if applicable)  
+Security Requirements (if applicable)  
 - Mention access control, verification, rate limits, etc.
 
----
-
-**Test Scenarios**  
+Test Scenarios
 - Simple bullet-style test cases covering the flow
 
----
-
-DO NOT add explanations or commentary. ONLY return this formatted output.
+DO NOT add explanations or commentary. ONLY return this formatted output in MARKDOWN.
 """)
 
 llm = ChatGoogleGenerativeAI(model="gemini-2.0-flash", api_key=GEMINI_API_KEY, temperature=0.7)
@@ -82,11 +72,23 @@ def get_user_story_agent(token: str):
         # Call LLM with prompt
         response = llm.invoke(prompt)
 
-        # Save new feature input + generated story to memory
-        save_memory_for_token(token, feature_input)
-        generated_text = response.get("text") if isinstance(response, dict) else str(response)
-        save_memory_for_token(token, generated_text)
+        if hasattr(response, 'text'):
+            clean_md = response.text() if callable(response.text) else response.text
+        elif isinstance(response, dict) and "text" in response:
+            clean_md = response["text"]
+        else:
+            clean_md = str(response)
 
-        return generated_text
+        if not isinstance(clean_md, str):
+            print("💥 CLEAN_MD was not string:", type(clean_md))
+            clean_md = str(clean_md)
+
+        clean_md = re.sub(r"^```(?:markdown)?\n?", "", clean_md)
+        clean_md = re.sub(r"\n?```$", "", clean_md)
+
+        save_memory_for_token(token, feature_input)
+        save_memory_for_token(token, clean_md.strip())
+
+        return clean_md.strip()
 
     return run_agent
