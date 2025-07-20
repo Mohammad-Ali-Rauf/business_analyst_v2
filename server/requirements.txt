@@ -1,6 +1,13 @@
 fastapi
 uvicorn
-whisper
+openai-whisper
+python-multipart
 torch
+langchain
+uuid
+langchain_google_genai
 google-generativeai
 python-dotenv
+qdrant-client
+langchain-community
+sentence-transformers

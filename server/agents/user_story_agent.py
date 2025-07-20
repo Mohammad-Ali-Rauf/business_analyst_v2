@@ -1,31 +1,92 @@
 import os
 from dotenv import load_dotenv
+
+from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain.prompts import PromptTemplate
 import google.generativeai as genai
 
+from utils.memory_manager import get_last_n_memories, save_memory_for_token
+
 load_dotenv()
-genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+genai.configure(api_key=GEMINI_API_KEY)
 
-prompt_template = """
-You are an expert Agile product owner.
+prompt_template = PromptTemplate.from_template("""
+You are an expert Agile Product Owner and Business Analyst.
 
-Based on the following input, write a user story in this format:
+Below is a summary of our prior conversation (if any), followed by the new input:
 
+---
+
+**Previous Context:**  
+{history}
+
+---
+
+**New Feature Input:**  
+{feature_input}
+
+---
+
+Your task is to generate a well-structured and detailed user story document based on the new input, considering any relevant prior context.
+Please produce a user story document that takes into account any relevant past features and context. If this story builds upon an earlier one, reference it naturally.
+
+Strictly follow this format:
+
+---
+
+**User Story**  
 As a [actor],  
 I want to [action],  
 So that [benefit].
 
-Include 2–3 acceptance criteria.
+---
 
-Input:
-{input}
-"""
+**Context**  
+Give 2–3 lines of extra background explaining the story’s business value, technical considerations, or UX importance.
 
-def get_user_story_agent():
-    model = genai.GenerativeModel('gemini-pro')
+---
 
+**Acceptance Criteria**  
+- Clear  
+- Testable  
+- Functional requirements only
+
+---
+
+**Security Requirements** (if applicable)  
+- Mention access control, verification, rate limits, etc.
+
+---
+
+**Test Scenarios**  
+- Simple bullet-style test cases covering the flow
+
+---
+
+DO NOT add explanations or commentary. ONLY return this formatted output.
+""")
+
+llm = ChatGoogleGenerativeAI(model="gemini-2.0-flash", api_key=GEMINI_API_KEY, temperature=0.7)
+
+
+def get_user_story_agent(token: str):
     def run_agent(feature_input: str):
-        final_prompt = prompt_template.format(input=feature_input)
-        response = model.generate_content(final_prompt)
-        return response.text.strip()
-    
+        # Fetch last 5 memories for context or fallback text
+        past_memories = get_last_n_memories(token, n=5)
+        history_text = "\n---\n".join(past_memories) if past_memories else "No prior context available."
+
+        # Build prompt with prior context + new input
+        prompt = prompt_template.format(history=history_text, feature_input=feature_input)
+
+        # Call LLM with prompt
+        response = llm.invoke(prompt)
+
+        # Save new feature input + generated story to memory
+        save_memory_for_token(token, feature_input)
+        generated_text = response.get("text") if isinstance(response, dict) else str(response)
+        save_memory_for_token(token, generated_text)
+
+        return generated_text
+
     return run_agent
