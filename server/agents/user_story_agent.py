@@ -80,7 +80,6 @@ def get_user_story_agent(token: str):
             clean_md = str(response)
 
         if not isinstance(clean_md, str):
-            print("💥 CLEAN_MD was not string:", type(clean_md))
             clean_md = str(clean_md)
 
         clean_md = re.sub(r"^```(?:markdown)?\n?", "", clean_md)
