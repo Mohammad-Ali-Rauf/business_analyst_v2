@@ -9,7 +9,7 @@ export default function Home() {
   const [story, setStory] = useState("");
   const [token, setToken] = useState("");
   const [loading, setLoading] = useState(false);
-  const [audioFile, setAudioFile] = useState(null);
+  const [audioFile, setAudioFile] = useState<File | null>(null);
   const [transcript, setTranscript] = useState("");
 
   useEffect(() => {
@@ -30,7 +30,7 @@ export default function Home() {
       formData.append("text", feature);
       formData.append("token", token);
 
-      const res = await axios.post("http://localhost:8000/generate_from_text", formData, {
+      const res = await axios.post("http://server:8000/generate_from_text", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
@@ -38,7 +38,7 @@ export default function Home() {
       console.log(data)
       setStory(data.story);
     } catch (e) {
-      setStory("Error: " + e.message);
+      setStory("Error: " + e);
     }
     setLoading(false);
   }
@@ -51,7 +51,7 @@ export default function Home() {
       formData.append("file", audioFile);
       formData.append("token", token);
 
-      const res = await axios.post("http://localhost:8000/generate_from_audio", formData, {
+      const res = await axios.post("http://server:8000/generate_from_audio", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
@@ -61,7 +61,7 @@ export default function Home() {
       setStory(res.data.story);
 
     } catch (e) {
-      alert("Transcription failed: " + e.message);
+      alert("Transcription failed: " + e);
     }
     setLoading(false);
   }
@@ -112,7 +112,7 @@ export default function Home() {
           <input
             type="file"
             accept="audio/*"
-            onChange={(e) => setAudioFile(e.target.files[0])}
+            onChange={(e) => setAudioFile(e.target.files?.[0] || null)}
             className="mb-4 text-red-500"
           />
 

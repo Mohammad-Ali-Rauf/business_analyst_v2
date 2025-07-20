@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-qdrant_client = QdrantClient(host="localhost", port=6333)
+qdrant_client = QdrantClient(host="qdrant", port=6333)
 
 def ensure_collection(client: QdrantClient, name: str, vector_size: int = 384):
     # Check if collection exists
