@@ -7,9 +7,11 @@ RUN apt-get update \
 
 WORKDIR /app
 
-# CPU-only torch keeps the image several GB smaller.
+# CPU-only torch keeps the image several GB smaller. The `+cpu` local version
+# must be pinned explicitly: a bare `torch` requirement resolves to the CUDA
+# build on PyPI (2.15.0+cpu < 2.15.0 per PEP 440).
 COPY requirements.txt .
-RUN pip install --no-cache-dir torch --extra-index-url https://download.pytorch.org/whl/cpu \
+RUN pip install --no-cache-dir torch==2.15.0+cpu --index-url https://download.pytorch.org/whl/cpu \
     && pip install --no-cache-dir -r requirements.txt
 
 COPY . .

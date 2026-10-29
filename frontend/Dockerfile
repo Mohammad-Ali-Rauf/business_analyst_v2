@@ -1,5 +1,5 @@
 # Install dependencies and build the app
-FROM node:20-alpine AS builder
+FROM node:22-alpine AS builder
 WORKDIR /app
 
 # Corepack activates the pnpm version pinned in package.json ("packageManager").
@@ -15,7 +15,7 @@ COPY . .
 RUN pnpm build
 
 # Run the slim standalone server
-FROM node:20-alpine AS runner
+FROM node:22-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production
 ENV HOSTNAME=0.0.0.0

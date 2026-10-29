@@ -1,0 +1,10 @@
+# CI/test subset of requirements.txt: everything except the heavyweight
+# speech & embedding stack (openai-whisper, sentence-transformers and torch),
+# which the test-suite stubs out. Keeps CI installs fast and small.
+fastapi==0.162.0
+uvicorn[standard]==0.54.0
+python-multipart==0.0.32
+python-dotenv==1.2.4
+langchain-core==1.7.1
+langchain-openai==1.7.3
+qdrant-client==1.20.0

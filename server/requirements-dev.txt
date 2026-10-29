@@ -1,0 +1,4 @@
+# Development & CI tooling — not required to run the service.
+pytest
+httpx
+ruff

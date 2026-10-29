@@ -1,16 +1,18 @@
+# Pinned for reproducible builds.
+
 # Web server
-fastapi
-uvicorn[standard]
-python-multipart
-python-dotenv
+fastapi==0.162.0
+uvicorn[standard]==0.54.0
+python-multipart==0.0.32
+python-dotenv==1.2.4
 
 # LLM orchestration
-langchain-core
-langchain-openai
+langchain-core==1.7.1
+langchain-openai==1.7.3
 
 # Vector memory
-qdrant-client
-sentence-transformers
+qdrant-client==1.20.0
+sentence-transformers==6.2.0
 
-# Speech to text
-openai-whisper
+# Speech to text (CPU-only torch is installed first in the Dockerfile)
+openai-whisper==20250625
