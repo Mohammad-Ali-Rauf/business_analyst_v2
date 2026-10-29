@@ -27,3 +27,4 @@ NEXT_PUBLIC_API_URL=http://localhost:8000 pnpm dev
 | `pnpm build`  | Create a production build     |
 | `pnpm start`  | Serve the production build    |
 | `pnpm lint`   | Run ESLint                    |
+| `pnpm test`   | Run the vitest suite          |
