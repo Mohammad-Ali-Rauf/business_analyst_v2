@@ -12,9 +12,16 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # --- LLM -------------------------------------------------------------------
-GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY", "")
-GEMINI_MODEL: str = os.getenv("GEMINI_MODEL", "gemini-2.0-flash")
+# Any OpenAI-compatible chat endpoint works; the defaults target OpenRouter.
+LLM_API_KEY: str = os.getenv("LLM_API_KEY", "")
+LLM_MODEL: str = os.getenv("LLM_MODEL", "google/gemini-3.8-flash")
+LLM_BASE_URL: str = os.getenv("LLM_BASE_URL", "https://openrouter.ai/api/v1")
 LLM_TEMPERATURE: float = float(os.getenv("LLM_TEMPERATURE", "0.7"))
+
+# Optional app attribution headers (used by OpenRouter rankings; harmless elsewhere).
+LLM_EXTRA_HEADERS: dict[str, str] = {"X-Title": "Agile User Story Generator"}
+if os.getenv("LLM_HTTP_REFERER"):
+    LLM_EXTRA_HEADERS["HTTP-Referer"] = os.environ["LLM_HTTP_REFERER"]
 
 # --- Speech to text --------------------------------------------------------
 WHISPER_MODEL: str = os.getenv("WHISPER_MODEL", "base")

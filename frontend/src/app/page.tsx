@@ -116,7 +116,7 @@ export default function Home() {
       </main>
 
       <footer className="mt-10 border-t border-line pt-5 text-center text-xs text-muted/70">
-        Powered by FastAPI · Google Gemini · OpenAI Whisper · Qdrant —
+        Powered by FastAPI · OpenRouter · OpenAI Whisper · Qdrant —
         stories are generated from your session context and may need review.
       </footer>
     </div>

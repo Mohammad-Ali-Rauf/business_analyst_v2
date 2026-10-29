@@ -6,7 +6,7 @@ python-dotenv
 
 # LLM orchestration
 langchain-core
-langchain-google-genai
+langchain-openai
 
 # Vector memory
 qdrant-client

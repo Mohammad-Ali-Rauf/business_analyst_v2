@@ -11,9 +11,16 @@ import logging
 import re
 
 from langchain_core.prompts import PromptTemplate
-from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_openai import ChatOpenAI
 
-from config import GEMINI_API_KEY, GEMINI_MODEL, LLM_TEMPERATURE, MEMORY_TOP_K
+from config import (
+    LLM_API_KEY,
+    LLM_BASE_URL,
+    LLM_EXTRA_HEADERS,
+    LLM_MODEL,
+    LLM_TEMPERATURE,
+    MEMORY_TOP_K,
+)
 from utils.memory_manager import get_last_n_memories, save_memory_for_token
 
 logger = logging.getLogger(__name__)
@@ -102,8 +109,8 @@ def generate_user_story(feature_input: str, token: str) -> str:
     feature_input = feature_input.strip()
     if not feature_input:
         raise ValueError("feature_input must not be empty")
-    if not GEMINI_API_KEY:
-        raise StoryGenerationError("GEMINI_API_KEY is not configured on the server")
+    if not LLM_API_KEY:
+        raise StoryGenerationError("LLM_API_KEY is not configured on the server")
 
     history = get_last_n_memories(token, n=MEMORY_TOP_K)
     history_text = "\n".join(history) if history else "No prior context available."
@@ -113,10 +120,12 @@ def generate_user_story(feature_input: str, token: str) -> str:
         feature_input=feature_input,
     )
 
-    llm = ChatGoogleGenerativeAI(
-        model=GEMINI_MODEL,
-        api_key=GEMINI_API_KEY,
+    llm = ChatOpenAI(
+        model=LLM_MODEL,
+        api_key=LLM_API_KEY,
+        base_url=LLM_BASE_URL,
         temperature=LLM_TEMPERATURE,
+        default_headers=LLM_EXTRA_HEADERS,
     )
 
     try:
