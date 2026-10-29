@@ -1,0 +1,16 @@
+# Web server
+fastapi
+uvicorn[standard]
+python-multipart
+python-dotenv
+
+# LLM orchestration
+langchain-core
+langchain-google-genai
+
+# Vector memory
+qdrant-client
+sentence-transformers
+
+# Speech to text
+openai-whisper
