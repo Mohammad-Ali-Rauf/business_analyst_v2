@@ -1,17 +1,18 @@
-# Install dependencies only when needed
-FROM node:20-alpine AS deps
-WORKDIR /app
-COPY package.json yarn.lock ./
-RUN yarn install --frozen-lockfile
-
-# Build the app with the API URL baked in
+# Install dependencies and build the app
 FROM node:20-alpine AS builder
 WORKDIR /app
+
+# Corepack activates the pnpm version pinned in package.json ("packageManager").
+RUN corepack enable
+
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install --frozen-lockfile
+
+# Build the app with the API URL baked in
 ARG NEXT_PUBLIC_API_URL=http://localhost:8000
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
-COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-RUN yarn build
+RUN pnpm build
 
 # Run the slim standalone server
 FROM node:20-alpine AS runner

@@ -7,8 +7,8 @@ story as styled markdown.
 ## Development
 
 ```bash
-yarn install
-yarn dev
+pnpm install
+pnpm dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000). The backend must be
@@ -16,14 +16,14 @@ running on port 8000 (see the root [README](../README.md)); override the API
 address with `NEXT_PUBLIC_API_URL`.
 
 ```bash
-NEXT_PUBLIC_API_URL=http://localhost:8000 yarn dev
+NEXT_PUBLIC_API_URL=http://localhost:8000 pnpm dev
 ```
 
 ## Scripts
 
 | Script        | Purpose                       |
 | ------------- | ----------------------------- |
-| `yarn dev`    | Start the development server  |
-| `yarn build`  | Create a production build     |
-| `yarn start`  | Serve the production build    |
-| `yarn lint`   | Run ESLint                    |
+| `pnpm dev`    | Start the development server  |
+| `pnpm build`  | Create a production build     |
+| `pnpm start`  | Serve the production build    |
+| `pnpm lint`   | Run ESLint                    |
