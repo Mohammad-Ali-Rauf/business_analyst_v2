@@ -134,6 +134,7 @@ export default function InputPanel({
           ref={fileInputRef}
           type="file"
           accept="audio/*"
+          data-testid="audio-input"
           className="hidden"
           onChange={(e) => onAudioFileChange(e.target.files?.[0] ?? null)}
         />
