@@ -1,0 +1,18 @@
+# Keep host artifacts out of the build context so `COPY . .` can't shadow the
+# container's own Linux node_modules or stale build output.
+node_modules
+.next
+out
+build
+coverage
+*.tsbuildinfo
+next-env.d.ts
+.env*
+.DS_Store
+*.pem
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+.vercel
+README.md
